@@ -41,13 +41,24 @@ def fetch_student_by_roll_no(rn):
     return student_data[rn]
 
 # UPDATE
-@app.put("/update-student")
-def update_student():
-    return "student updated"
+@app.put("/update-student/{rn}")
+def update_student(rn):
+    print(rn)
 
-@app.delete("delete-student")
-def delete_student():
-    return "student deleted"
+    updated_dict = {"student_roll_no": rn,
+                "student_name": "vijay",
+                "student_class" : "s6",
+                "student_contact": "8765432345"}
+
+    student_data.update({rn:updated_dict})
+
+    return f"student with roll no. {rn} updated"
+
+@app.delete("/delete-student/{rn}")
+def delete_student(rn):
+    print(rn)
+    student_data.pop(str(rn))
+    return f"student with roll no. {rn} deleted"
 
 
 
