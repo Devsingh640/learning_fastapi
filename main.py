@@ -59,15 +59,10 @@ def fetch_student_by_roll_no(rn: int, response_model = StudentData):
 
     # if else condition
     if rn < 0 or rn >= len(students):
-        pass
+        return {"message": "no data found"}
     else:
         return students[rn]
 
-
-    return student_data.get("rn", {"student_roll_no": "4321",
-             "student_name": "sumit",
-             "student_class": "s2",
-             "student_contact": "0987654321"})
 
 # UPDATE
 @app.put("/update-student/{rn}")
