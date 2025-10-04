@@ -18,59 +18,110 @@ class StudentData(BaseModel):
 
 students=[] # list of objects (dictionaries)
 
+
 @app.get("/")
 def index():
     return "hello world"
 
-# CREATE
+
 @app.post("/create-student", response_model=StudentData)
-def create_student(studentData: StudentData):
-    students.append(studentData)
-    print(students)     # print the original data structure
-    print(students[0]) # print the ist element from the student data
-    return studentData
+def create_student(student_data: StudentData):
+    try:
+        students.append(student_data)
+        return {"message": f"created successfully",
+                "data": student_data,
+                "status": True
+                }
+    except Exception as error:
+        return {
+            "message" : str(error),
+            "data" : None,
+            "status": False
+        }
 
 
 @app.get("/fetch-students", response_model=StudentData)
 def fetch_students():
-    if len(students) <=0:
-        return {"message": "data not found"}
-    else:
-        # error is here
-        return students
+    try:
+        if len(students) <= 0:
+            return {"message": "not found",
+                    "data": None,
+                    "status": False
+                    }
+        else:
+            return {"message": "record found",
+                "data": students,
+                "status": True
+                }
+    except Exception as error:
+        return {
+            "message": str(error),
+            "data": None,
+            "status": False
+        }
 
 
-@app.get("/fetch-student-by-roll-no/{rn}")
-def fetch_student_by_roll_no(rn: int, response_model = StudentData):
-    print(rn)
-    print(type(rn))
+@app.get("/fetch-student-by-roll-no/{rid}")
+def fetch_student_by_roll_no(rid: int):
+    try:
+        if rid < 0 or rid >= len(students):
+            return {"message": "not found",
+                "data": None,
+                "status": False
+                }
+        else:
+            return {"message": "record found",
+                "data": students[rid],
+                "status": True
+                }
+    except Exception as error:
+        return {
+            "message": str(error),
+            "data": None,
+            "status": False
+        }
 
-    # if else condition
-    if rn < 0 or rn >= len(students):
-        return {"message": "data not found"}
-    else:
-        return students[rn]
+
+@app.put("/update-student/{rid}")
+def update_student(rid:int, student_data: StudentData):
+    try:
+        if rid < 0 or rid >= len(students):
+            return {"message": "not found",
+                    "data":None,
+                    "status":False}
+        else:
+            students[rid] = student_data
+            return {"message": f"student with roll no. {rid} updated",
+                    "data": student_data,
+                    "status": True
+                    }
+    except Exception as error:
+        return {
+            "message": str(error),
+            "data": None,
+            "status": False
+        }
 
 
-# # UPDATE
-# @app.put("/update-student/{rn}")
-# def update_student(rn):
-#     print(rn)
-#
-#     updated_dict = {"student_roll_no": rn,
-#                 "student_name": "vijay",
-#                 "student_class" : "s6",
-#                 "student_contact": "8765432345"}
-#
-#     student_data.update({rn:updated_dict})
-
-    return f"student with roll no. {rn} updated"
-
-# @app.delete("/delete-student/{rn}")
-# def delete_student(rn):
-#     print(rn)
-#     student_data.pop(str(rn))
-#     return f"student with roll no. {rn} deleted"
+@app.delete("/delete-student/{rid}")
+def delete_student(rid:int):
+    try:
+        if rid < 0 or rid >= len(students):
+            return {"message": "not found",
+                    "data":None,
+                    "status":False}
+        else:
+            deleted_student = students.pop(rid)
+            return {"message": f"student with roll no. {rid} deleted",
+                    "data": deleted_student,
+                    "status": True
+                    }
+    except Exception as error:
+        return {
+            "message" : str(error),
+            "data" : None,
+            "status": False
+        }
 
 
 
