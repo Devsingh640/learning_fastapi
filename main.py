@@ -46,11 +46,26 @@ def create_student(studentData: StudentData):
     print(students[0]) # print the ist element from the student data
     return studentData
 
+
 @app.get("/fetch-students", response_model=StudentData)
 def fetch_students():
+    if len(students) <=0:
+        return {"message": "data not found"}
+    else:
+        # error is here
+        return students
 
+"""
+@app.get("/fetch-students", response_model=list(StudentData))
+def fetch_students():
+    if len(students) <=0:
+        return {"message": "data not found"}
+    else:
+        # error is here
+        return students
 
-    return students
+"""
+
 
 @app.get("/fetch-student-by-roll-no/{rn}")
 def fetch_student_by_roll_no(rn: int, response_model = StudentData):
@@ -59,7 +74,7 @@ def fetch_student_by_roll_no(rn: int, response_model = StudentData):
 
     # if else condition
     if rn < 0 or rn >= len(students):
-        return {"message": "no data found"}
+        return {"message": "data not found"}
     else:
         return students[rn]
 
