@@ -24,8 +24,17 @@ class ApiResponseModel(BaseModel, Generic[T]):
     status: bool
 
 
+students: List[StudentData] = []
 
-students=[] # list of objects (dictionaries)
+
+# helper
+def check_if_roll_no_exists(roll_no: int):
+    for i, student in enumerate(students):
+        if student.student_roll == roll_no:
+            return True, i
+        else:
+            continue
+    return False, None
 
 
 @app.get("/")
@@ -33,20 +42,16 @@ def index():
     return "hello world"
 
 
-@app.post("/students")
+@app.post("/students", response_model=ApiResponseModel[StudentData])
 def create_student(student_data: StudentData):
     try:
-        students.append(student_data)
-        return {"message": f"created successfully",
-                "data": student_data,
-                "status": True
-                }
+        exists, i = check_if_roll_no_exists(student_data.student_roll)
+        if not exists:
+            students.append(student_data)
+            return ApiResponseModel(message="created successfully", data=student_data, status=True)
+        else:
+            return ApiResponseModel(message="record already exists", data=None, status=False)
     except Exception as error:
-        # return {
-        #     "message" : str(error),
-        #     "data" : None,
-        #     "status": False
-        # }
         return ApiResponseModel(message=str(error), data=None, status=False)
 
 
@@ -54,45 +59,22 @@ def create_student(student_data: StudentData):
 def fetch_students():
     try:
         if len(students) <= 0:
-            # return {"message": "not found",
-            #         "data": None,
-            #         "status": False
-            #         }
-            return ApiResponseModel(message="not found", data=[], status=False)
+            return ApiResponseModel(message="data not found", data=[], status=False)
         else:
-            # return {"message": "record found",
-            #     "data": students,
-            #     "status": True
-            #     }
-            return ApiResponseModel(message="not found", data=students, status=False)
+            return ApiResponseModel(message="data found", data=students, status=False)
     except Exception as error:
-        # return {
-        #     "message": str(error),
-        #     "data": None,
-        #     "status": False
-        # }
         return ApiResponseModel(message=str(error), data=None, status=False)
 
 
-@app.get("/students/{rid}")
+@app.get("/students/{rid}", response_model=ApiResponseModel[StudentData])
 def fetch_student_by_roll_no(rid: int):
     try:
-        if rid < 0 or rid >= len(students):
-            return {"message": "not found",
-                "data": None,
-                "status": False
-                }
+        exists, i = check_if_roll_no_exists(rid)
+        if not exists:
+            return ApiResponseModel(message="data not found", data=None, status=False)
         else:
-            return {"message": "record found",
-                "data": students[rid],
-                "status": True
-                }
+            ApiResponseModel(message="data found", data=students[i], status=False)
     except Exception as error:
-        # return {
-        #     "message": str(error),
-        #     "data": None,
-        #     "status": False
-        # }
         return ApiResponseModel(message=str(error), data=None, status=False)
 
 
