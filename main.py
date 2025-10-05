@@ -61,7 +61,7 @@ def fetch_students():
         if len(students) <= 0:
             return ApiResponseModel(message="data not found", data=[], status=False)
         else:
-            return ApiResponseModel(message="data found", data=students, status=False)
+            return ApiResponseModel(message="data found", data=students, status=True)
     except Exception as error:
         return ApiResponseModel(message=str(error), data=None, status=False)
 
@@ -73,7 +73,7 @@ def fetch_student_by_roll_no(rid: int):
         if not exists:
             return ApiResponseModel(message="data not found", data=None, status=False)
         else:
-            ApiResponseModel(message="data found", data=students[i], status=False)
+            ApiResponseModel(message="data found", data=students[i], status=True)
     except Exception as error:
         return ApiResponseModel(message=str(error), data=None, status=False)
 
@@ -92,33 +92,19 @@ def update_student(rid:int, student_data: StudentData):
                     "status": True
                     }
     except Exception as error:
-        # return {
-        #     "message": str(error),
-        #     "data": None,
-        #     "status": False
-        # }
         return ApiResponseModel(message=str(error), data=None, status=False)
 
 
 @app.delete("/students/{rid}")
 def delete_student(rid:int):
     try:
-        if rid < 0 or rid >= len(students):
-            return {"message": "not found",
-                    "data":None,
-                    "status":False}
+        exists, i = check_if_roll_no_exists(rid)
+        if not exists:
+            return ApiResponseModel(message="data not found", data=None, status=False)
         else:
             deleted_student = students.pop(rid)
-            return {"message": f"student with roll no. {rid} deleted",
-                    "data": deleted_student,
-                    "status": True
-                    }
+            ApiResponseModel(message="data deleted", data=deleted_student, status=True)
     except Exception as error:
-        # return {
-        #     "message" : str(error),
-        #     "data" : None,
-        #     "status": False
-        # }
         return ApiResponseModel(message=str(error), data=None, status=False)
 
 
