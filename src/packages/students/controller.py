@@ -20,10 +20,6 @@ def check_if_roll_no_exists(roll_no: int):
     return False, None
 
 
-@student_router.get("/dummy-student")
-def dummy_student():
-    return "hello"
-
 
 @student_router.post("/", response_model=ApiResponseModel[List[StudentData]])
 def create_student(student_data: StudentData):
