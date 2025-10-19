@@ -1,1 +1,20 @@
-these are new changes
+{
+  "student_name": "abc",
+  "student_class": "2",
+  "student_contact": 1,
+  "student_address": "ggg"
+}
+
+{
+  "student_name": "kbc",
+  "student_class": "1",
+  "student_contact": 2,
+  "student_address": "kkk"
+}
+
+{
+  "student_name": "jkl",
+  "student_class": "3",
+  "student_contact": 3,
+  "student_address": "zzz"
+}
