@@ -77,12 +77,17 @@ def update_student(rid:int, student_data: StudentData):
 @student_router.delete("/{rid}", response_model=ApiResponseModel[List[StudentData]])
 def delete_student(rid:int):
     try:
+        # cal start time
         exists, i = check_if_roll_no_exists(rid)
         if not exists:
             return ApiResponseModel(message="data not found", data=None, status=False)
         else:
             deleted_student = students.pop(i)
             ApiResponseModel(message="data deleted", data=[deleted_student], status=True)
+        # end time cal
+
+        # final time = end time - start time
+        print("")
     except Exception as error:
         return ApiResponseModel(message=str(error), data=None, status=False)
 
