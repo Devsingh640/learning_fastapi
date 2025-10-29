@@ -1,4 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_core import MultiHostUrl
+from pydantic import PostgresDsn
 
 class Settings(BaseSettings):
 
@@ -19,9 +21,20 @@ class Settings(BaseSettings):
     REDIS_PASSWORD:str = "Admin@123"
     REDIS_DB:int = 0
 
+    DB: str = "postgresql+psycopg://admin:Admin%40123@127.0.0.0:5432/test_db"
 
-
-
+    @property
+    def sql_database_url(self) -> PostgresDsn:
+        return MultiHostUrl.build(
+            scheme="postgresql+psycopg",
+            username=self.POSTGRESQL_USERNAME,
+            password=self.POSTGRESQL_PASSWORD,
+            host=self.POSTGRESQL_HOST,
+            port=self.POSTGRESQL_PORT,
+            path=self.POSTGRESQL_DB
+        )
 
 
 settings = Settings()
+
+print("Connection URL for DB: ", settings.sql_database_url)
