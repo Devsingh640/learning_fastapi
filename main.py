@@ -1,17 +1,30 @@
 import time
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.cors import CORSMiddleware
-
+import gc
 from src.packages.routes.router import init_routes
+from src.packages.utilities.pos_db import create_db_tables, close_session
 
 app = FastAPI()
 
 init_routes(app)
 
 template = Jinja2Templates(directory="templates")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        create_db_tables()
+    except Exception as error:
+        print(str(error))
+    finally:
+        close_session()
+        gc.collect()
 
 
 # @app.get("/", response_class=HTMLResponse)

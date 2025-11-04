@@ -1,9 +1,12 @@
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from src.packages.students.model import StudentData
+from src.packages.students.dal import StudentDal
+from src.packages.students.model import StudentData, AddStudentData
+from src.packages.students.service import StudentService
 from src.packages.utilities.api_response_model import ApiResponseModel
+from src.packages.utilities.pos_db import get_session
 
 student_router = APIRouter()
 
@@ -19,6 +22,15 @@ def check_if_roll_no_exists(roll_no: int):
             continue
     return False, None
 
+def get_student_service(session = Depends(get_session)) -> StudentService :
+    return StudentService(StudentDal(session))
+
+
+
+@student_router.post("/s1")
+def create_student(student_data: AddStudentData | List[AddStudentData],
+                   student_service = Depends(get_student_service)):
+        return student_service.create(student_data)
 
 
 @student_router.post("/", response_model=ApiResponseModel[List[StudentData]])
