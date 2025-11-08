@@ -1,7 +1,7 @@
 from typing import List
 
 from src.packages.students.model import Student
-
+from fastapi import Request
 
 class StudentDal:
 
@@ -11,6 +11,8 @@ class StudentDal:
     # can do single insert and bulk insert
     def add(self, new_students: List[Student]):
         try:
+            result = []
+
             # new_students = [s1 , s2, s3]
             for student in new_students:
                 self.session.add(student)
@@ -19,6 +21,9 @@ class StudentDal:
 
             for student in new_students:
                 self.session.refresh(student)
+                result.append(student)
+
+            return result
 
         except Exception as error:
             self.session.rollback()
@@ -27,12 +32,10 @@ class StudentDal:
 
 
 
-
-
-
-
-
-    def get_all(self):
+    def get_all(self, request_model: Request, page:int, limit:int):
+        # prepare query (request_model-> filters
+    #                    pagination parameters -> page, limit,
+    #                    offset)
         pass
 
     def get_by_id(self, r_id: int):

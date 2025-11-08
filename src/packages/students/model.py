@@ -21,8 +21,8 @@ class Student(SQLModel, table=True):
     student_roll: str  = Field(default=None, unique=True, index=True)
     student_name : str = Field(default=None)
     student_class : str = Field(default=None)
-    student_contact: int = Field(default=None, unique=True, index=True)
-    student_address: str = Field(default=None)
+    student_contact: Optional[str] = None
+    student_address: Optional[str] = None
 
     description: Optional[str] = None
     # description: str | None
@@ -56,7 +56,7 @@ class UpdateStudentData(SQLModel):
 
     student_name: str | None = None
     student_class: str | None = None
-    student_contact: int | None = None
+    student_contact: str | None = None
     student_address: str | None = None
     description: Optional[str] = None
 

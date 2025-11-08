@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query, Request
 
 from src.packages.students.dal import StudentDal
 from src.packages.students.model import StudentData, AddStudentData
@@ -28,9 +28,24 @@ def get_student_service(session = Depends(get_session)) -> StudentService :
 
 
 @student_router.post("/s1")
-def create_student(student_data: AddStudentData | List[AddStudentData],
+def new_create_student(student_data: AddStudentData | List[AddStudentData],
                    student_service = Depends(get_student_service)):
+
+        if isinstance(student_data, AddStudentData):
+            student_data = [student_data]
+
         return student_service.create(student_data)
+
+
+@student_router.get("/s1")
+def new_get_students(request_model: Request,
+                    page: int = Query(default=1),
+                    limit: int = Query(default=10),
+                    student_service = Depends(get_student_service)
+                     ):
+    return student_service.get_all(request_model, page, limit)
+
+
 
 
 @student_router.post("/", response_model=ApiResponseModel[List[StudentData]])
