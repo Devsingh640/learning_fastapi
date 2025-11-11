@@ -10,7 +10,7 @@ import gc
 from src.configuration.configuration import settings
 from src.packages.routes.router import init_routes
 from src.packages.utilities.pos_db import create_db_tables, close_session
-
+from admin import init_admin
 template = Jinja2Templates(directory="templates")
 
 
@@ -18,6 +18,7 @@ template = Jinja2Templates(directory="templates")
 async def lifespan(app: FastAPI):
     try:
         init_routes(app)
+        init_admin(app)
 
         create_db_tables()
     except Exception as error:
@@ -55,7 +56,8 @@ def index(request:Request):
         "user": "VISHAL",
         "status": "Active"
     }
-    return template.TemplateResponse("index.html", context=context)
+    return template.TemplateResponse("index1.html", context=context)
+
 
 
 
