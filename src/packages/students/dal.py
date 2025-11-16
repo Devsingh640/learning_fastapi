@@ -1,7 +1,10 @@
 from typing import List
 
-from src.packages.students.model import Student
+from fastapi.exceptions import FastAPIError
 
+from src.packages.students.model import Student
+from fastapi import Request
+from sqlmodel import select, func
 
 class StudentDal:
 
@@ -11,6 +14,8 @@ class StudentDal:
     # can do single insert and bulk insert
     def add(self, new_students: List[Student]):
         try:
+            result = []
+
             # new_students = [s1 , s2, s3]
             for student in new_students:
                 self.session.add(student)
@@ -19,27 +24,69 @@ class StudentDal:
 
             for student in new_students:
                 self.session.refresh(student)
+                result.append(student)
+
+            return result
 
         except Exception as error:
             self.session.rollback()
-            print("Unexpected Error Occured: ", str(error))
+            print("Unexpected Error : ", str(error))
 
 
 
+    def get_all(self, request_model: Request, offset:int, limit:int):
+        try:
+            statement = select(Student)
 
+            if offset is not None and limit is not None:
+                page = (offset -1)*limit
+                statement = statement.order_by(Student.id.desc()).offset(page).limit(limit)
+            else:
+                pass
 
+            records = self.session.exec(statement=statement).all()
+            # data = [Student, Student, Student, Student, Student, Student]
 
+            count_statement = select(func.count()).select_from(Student)
+            total_count = self.session.exec(count_statement).one()
 
+            return records, total_count
 
-
-    def get_all(self):
-        pass
+        except Exception as error:
+            print("Unexpected Error : ", str(error))
 
     def get_by_id(self, r_id: int):
-        pass
+        try:
+            record = self.session.get(Student, r_id)
+            return record
+        except Exception as error:
+            print("Unexpected Error : ", str(error))
 
-    def update(self, r_id: int, body: dict):
-        pass
 
-    def delete(self, r_id: int):
-        pass
+    def update_by_id(self, r_id: int, body):
+        try:
+            record = self.session.get(Student, r_id)
+            if record is None:
+                return False, None
+            else:
+                record.sqlmodel_update(body.model_dump(exclude_unset=True))
+                self.session.add(record)
+                self.session.commit()
+                self.session.refresh(record)
+                return True, record
+        except Exception as error:
+            self.session.rollback()
+            print("Unexpected Error : ", str(error))
+
+    def delete_by_id(self, r_id: int):
+        try:
+            record = self.session.get(Student, r_id)
+            if record is None:
+                return False, None
+            else:
+                self.session.delete(record)
+                self.session.commit()
+                return True, record
+        except Exception as error:
+            self.session.rollback()
+            print("Unexpected Error : ", str(error))
