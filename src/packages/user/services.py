@@ -13,9 +13,9 @@ class UserService:
         try:
             new_user_data_to_save =  [User.model_validate(user) for user in new_users]
 
-            # new_student_data_to_save = []
-            # for student in new_students:
-            #     new_student_data_to_save.append(Student.model_validate(student))
+            # new_user_data_to_save = []
+            # for user in new_users:
+            #     new_user_data_to_save.append(User.model_validate(user))
 
             response = self.user_dal.add(new_user_data_to_save)
 
@@ -23,9 +23,9 @@ class UserService:
                 response_data =  [ReadUserData(**inserted_user.model_dump()) for inserted_user in response]
 
                 # response_data = []
-                # for inserted_student in response:
-                #     dict_data = inserted_student.model_dump()
-                #     response_data.append(ReadStudentData(**dict_data))
+                # for inserted_user in response:
+                #     dict_data = inserted_user.model_dump()
+                #     response_data.append(ReadUserData(**dict_data))
 
 
                 return JSONResponse({
@@ -51,7 +51,7 @@ class UserService:
             data, total_records= self.user_dal.get_all(request_model, page, limit)
 
             if data:
-                # data = [Student, Student, Student, Student, Student, Student]
+                # data = [User, User, User, User, User, User]
                 response_data = [ReadUserData.model_dump(el) for el in data]
                 # response_data = [{}, {}, {}, {}, {}, {}]
                 return JSONResponse({
