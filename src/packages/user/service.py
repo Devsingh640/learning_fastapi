@@ -1,35 +1,35 @@
 from starlette.responses import JSONResponse
 
-from src.packages.students.dal import StudentDal
-from src.packages.students.model import Student, ReadStudentData
+from src.packages.user.dal import UserDal
+from src.packages.user.model import User, ReadUserData
 from fastapi.encoders import jsonable_encoder
 from fastapi import Request
 
-class StudentService:
-    def __init__(self, student_dal: StudentDal):
-        self.student_dal = student_dal
+class UserService:
+    def __init__(self, user_dal: UserDal):
+        self.user_dal = user_dal
 
-    def create(self, new_students):
+    def create(self, new_users):
         try:
-            new_student_data_to_save =  [Student.model_validate(student) for student in new_students]
+            new_user_data_to_save =  [User.model_validate(user) for user in new_users]
 
-            # new_student_data_to_save = []
-            # for student in new_students:
-            #     new_student_data_to_save.append(Student.model_validate(student))
+            # new_user_data_to_save = []
+            # for user in new_users:
+            #     new_user_data_to_save.append(User.model_validate(user))
 
-            response = self.student_dal.add(new_student_data_to_save)
+            response = self.user_dal.add(new_user_data_to_save)
 
             if response:
-                response_data =  [ReadStudentData(**inserted_student.model_dump()) for inserted_student in response]
+                response_data =  [ReadUserData(**inserted_user.model_dump()) for inserted_user in response]
 
                 # response_data = []
-                # for inserted_student in response:
-                #     dict_data = inserted_student.model_dump()
-                #     response_data.append(ReadStudentData(**dict_data))
+                # for inserted_user in response:
+                #     dict_data = inserted_user.model_dump()
+                #     response_data.append(ReadUserData(**dict_data))
 
 
                 return JSONResponse({
-                    "message" : "student created successfully",
+                    "message" : "user created successfully",
                     "data": jsonable_encoder(response_data),
                     "status" : True
                 },
@@ -37,7 +37,7 @@ class StudentService:
 
             else:
                 return JSONResponse({
-                    "message" : "student not created successfully",
+                    "message" : "user not created successfully",
                     "data": None,
                     "status": False
                 },
@@ -48,11 +48,11 @@ class StudentService:
 
     def get_all(self, request_model: Request, page:int, limit:int):
         try:
-            data, total_records= self.student_dal.get_all(request_model, page, limit)
+            data, total_records= self.user_dal.get_all(request_model, page, limit)
 
             if data:
-                # data = [Student, Student, Student, Student, Student, Student]
-                response_data = [ReadStudentData.model_dump(el) for el in data]
+                # data = [User, User, User, User, User, User]
+                response_data = [ReadUserData.model_dump(el) for el in data]
                 # response_data = [{}, {}, {}, {}, {}, {}]
                 return JSONResponse({
                     "message": "data found",
@@ -77,7 +77,7 @@ class StudentService:
 
     def get_by_id(self, r_id: int):
         try:
-            data= self.student_dal.get_by_id(r_id)
+            data= self.user_dal.get_by_id(r_id)
             if not data:
                 return JSONResponse({
                     "message": "no record found",
@@ -86,7 +86,7 @@ class StudentService:
                 },
                     status_code=200)
             else:
-                response_data = ReadStudentData.model_dump(data)
+                response_data = ReadUserData.model_dump(data)
                 return JSONResponse({
                     "message": "record found",
                     "data": jsonable_encoder(response_data),
@@ -98,7 +98,7 @@ class StudentService:
 
     def update_by_id(self, r_id: int, body):
         try:
-            status, data = self.student_dal.update_by_id(r_id, body)
+            status, data = self.user_dal.update_by_id(r_id, body)
             if not status:
                 return JSONResponse({
                     "message": "no record found",
@@ -107,7 +107,7 @@ class StudentService:
                 },
                     status_code=200)
             else:
-                response_data = ReadStudentData.model_dump(data)
+                response_data = ReadUserData.model_dump(data)
                 return JSONResponse({
                     "message": "record deleted",
                     "data": jsonable_encoder(response_data),
@@ -119,7 +119,7 @@ class StudentService:
 
     def delete_by_id(self, r_id: int):
         try:
-            status, data= self.student_dal.delete_by_id(r_id)
+            status, data= self.user_dal.delete_by_id(r_id)
             if not status:
                 return JSONResponse({
                     "message": "no record found",
@@ -128,7 +128,7 @@ class StudentService:
                 },
                     status_code=200)
             else:
-                response_data = ReadStudentData.model_dump(data)
+                response_data = ReadUserData.model_dump(data)
                 return JSONResponse({
                     "message": "record deleted",
                     "data": jsonable_encoder(response_data),

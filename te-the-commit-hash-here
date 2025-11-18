@@ -1,0 +1,37 @@
+[33m736f27b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge remote-tracking branch 'origin/main'
+[33mf90c57e[m application configuration added to project
+[33m40a62b5[m application configuration added to project
+[33m3b6aeff[m[33m ([m[1;31morigin/dev_raj[m[33m)[m middlewares
+[33m345aa6e[m jinja template render engine used
+[33mffbc464[m Merge remote-tracking branch 'origin/dev_om_dev'
+[33m8e1d148[m Merge remote-tracking branch 'origin/main'
+[33m864ced1[m Update main.py
+[33m2772b3e[m Update run.py
+[33m7610ddc[m docker file and deployment.sh created
+[33m7574a02[m Merge pull request #10 from Devsingh640/dev_raj
+[33m2322be7[m student obtain marks
+[33m3ccbd1e[m[33m ([m[1;31morigin/dev_om_dev[m[33m)[m tags in swagger
+[33mda6e34c[m router connected to app controllers
+[33mc1841f3[m Merge pull request #7 from Devsingh640/deveopment
+[33mea7b6b4[m Merge pull request #6 from Devsingh640/deveopment
+[33mb4f3e8f[m Merge pull request #5 from Devsingh640/student_feature_development
+[33m6d06719[m[33m ([m[1;31morigin/student_feature_development[m[33m)[m Merge pull request #4 from Devsingh640/dev_om_dev
+[33m29af06d[m api response model added to the updated student route
+[33mb0b66f6[m api response model added to the delete student route
+[33m678793d[m api response model added to the get by roll no and post student route
+[33m518a741[m api response model added to the get student route
+[33m385f934[m Merge pull request #3 from Devsingh640/student_feature_development
+[33mec5669b[m Merge pull request #2 from Devsingh640/dev_om_dev
+[33m7f560e8[m modified code for student crud
+[33m1941fa4[m Merge branch 'student_feature_development' into dev_om_dev
+[33m02cfd5f[m code cleaning
+[33me8e8009[m last class changes
+[33mfcf856e[m Merge pull request #1 from Devsingh640/dev_raj
+[33m18559e9[m single line inserted for pullrequest
+[33m20f009d[m[33m ([m[1;31morigin/dev_shashank[m[33m, [m[1;31morigin/dev_abhinav[m[33m, [m[1;31morigin/dev_Anurag[m[33m)[m get by id endpoint updated
+[33mf70c5e4[m debugger
+[33m37df267[m student update and delete apis using dictionary
+[33md4cfd66[m student details get api implemented
+[33m990dac7[m Update abc.txt added a line
+[33me373d1c[m this is my initial commit
+[33m33d73ff[m Initial commit
