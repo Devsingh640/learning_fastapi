@@ -1,7 +1,7 @@
 from starlette.responses import JSONResponse
 
-from src.packages.users.dal import UserDal
-from src.packages.users.model import User, ReadUserData
+from src.packages.user.dal import UserDal
+from src.packages.user.model import User, ReadUserData
 from fastapi.encoders import jsonable_encoder
 from fastapi import Request
 
