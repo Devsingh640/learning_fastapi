@@ -28,6 +28,7 @@ class Student(SQLModel, table=True):
     # description: str | None
 
 
+
 class AddStudentData(SQLModel):
     model_config = {"protected_namespace":()}
 

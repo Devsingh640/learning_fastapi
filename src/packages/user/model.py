@@ -5,6 +5,10 @@ from sqlmodel import SQLModel, Field
 
 from datetime import datetime, timezone
 
+from passlib.context import CryptContext
+#bcrypt
+
+password_context = CryptContext(schemes=["bcrypt"])
 
 # Since we have 3 unique values in the data set by which we can applied CRUD operation. Which are user_id, user_name, email
 
@@ -27,7 +31,7 @@ class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id : str = Field(default=None, unique=True, index=True)
     user_name:  str = Field(default=None, unique=True, index=True)
-    password : str = Field(default=None)
+    password : str
     email: str = Field(default=None, unique=True, index=True)
 
     created_at : datetime = Field(default_factory=lambda :datetime.now(timezone.utc))
@@ -35,6 +39,17 @@ class User(SQLModel, table=True):
     status: Optional[bool] = None
     description: Optional[str] = None
     # description: str | None
+
+    class config:
+        from_attributes = True
+
+    def verify_password(self, plain_password):
+        return password_context.verify(plain_password, self.password)
+
+    def get_hash_password(self):
+        self.password = password_context.hash(self.password)
+
+
 
 
 class AddUserData(SQLModel):
@@ -86,6 +101,11 @@ class UpdateUserData(SQLModel):
 
     class config:
         from_attributes = True
+
+
+class UserLoginRequest(SQLModel):
+    email:str
+    password:str
 
 
 

@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Annotated
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, Query, Request, Form
 
 from src.packages.user.dal import UserDal
 from src.packages.user.model import UserData, AddUserData, UpdateUserData
@@ -280,5 +280,14 @@ def delete_email(email: str):
 
     except Exception as error:
         return ApiResponseModel(message=str(error), data=None, status=False)
+
+
+
+# login endpoint
+@user_router.post("/login")
+def user_login(email: Annotated[str, Form()], password: Annotated[str, Form()]):
+    print("Email: ",email)
+    print("Password", password)
+    return None
 
 
