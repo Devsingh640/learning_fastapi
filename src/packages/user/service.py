@@ -11,11 +11,14 @@ class UserService:
 
     def create(self, new_users):
         try:
-            new_user_data_to_save =  [User.model_validate(user) for user in new_users]
+            # new_user_data_to_save =  [User.model_validate(user) for user in new_users]
 
-            # new_user_data_to_save = []
-            # for user in new_users:
-            #     new_user_data_to_save.append(User.model_validate(user))
+            new_user_data_to_save = []
+            for user in new_users:
+                my_user = User.model_validate(user)
+                my_user.get_hash_password()
+
+                new_user_data_to_save.append(my_user)
 
             response = self.user_dal.add(new_user_data_to_save)
 
@@ -137,6 +140,28 @@ class UserService:
                     status_code=200)
         except Exception as error:
             print("Unexpected Error : ", str(error))
+
+    def login(self, email="", password=""):
+
+        user = self.user_dal.login_user(email, password)
+
+        if not user:
+            return JSONResponse({
+                "message": "invalid creds",
+                "data": None,
+                "status": False
+            },
+                status_code=401)
+        else:
+            response_data = user.model_dump()
+            return JSONResponse({
+                "message": "login success",
+                "data": jsonable_encoder(response_data),
+                "status": True
+            },
+                status_code=200)
+
+
 
 
 
