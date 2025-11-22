@@ -32,8 +32,6 @@ class UserDal:
             self.session.rollback()
             print("Unexpected Error : ", str(error))
 
-
-
     def get_all(self, request_model: Request, offset:int, limit:int):
         try:
             statement = select(User)
@@ -62,7 +60,6 @@ class UserDal:
         except Exception as error:
             print("Unexpected Error : ", str(error))
 
-
     def update_by_id(self, r_id: int, body):
         try:
             record = self.session.get(User, r_id)
@@ -90,3 +87,14 @@ class UserDal:
         except Exception as error:
             self.session.rollback()
             print("Unexpected Error : ", str(error))
+
+    def login_user(self, email="", password=""):
+        user = self.session.exec(select(User).where(User.email==email)).first()
+
+        if not user:
+            return None
+
+        if not user.verify_password(plain_password=password):
+            return None
+
+        return user
