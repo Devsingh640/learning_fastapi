@@ -285,9 +285,9 @@ def delete_email(email: str):
 
 # login endpoint
 @user_router.post("/login")
-def user_login(email: Annotated[str, Form()], password: Annotated[str, Form()]):
-    print("Email: ",email)
-    print("Password", password)
-    return None
+def user_login(email: Annotated[str, Form()],
+               password: Annotated[str, Form()],
+               user_service = Depends(get_user_service)):
+    return user_service.login(email=email, password=password)
 
 
