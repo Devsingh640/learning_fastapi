@@ -1,7 +1,8 @@
 from typing import List, Annotated
 
+from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, Query, Request, Form
-
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from src.packages.user.dal import UserDal
 from src.packages.user.model import UserData, AddUserData, UpdateUserData
 from src.packages.user.service import UserService
@@ -281,7 +282,37 @@ def delete_email(email: str):
     except Exception as error:
         return ApiResponseModel(message=str(error), data=None, status=False)
 
+@user_router.post("/u1")
+def new_create_user(user_data: AddUserData | List[AddUserData],
+                   user_service = Depends(get_user_service)):
 
+        if isinstance(user_data, AddUserData):
+            user_data = [user_data]
+
+        return user_service.create(user_data)
+
+
+# signup endpoint
+@user_router.post("/signup")
+def signup_user(user_id: Annotated[str, Form()],
+                user_name: Annotated[str, Form()],
+                email: Annotated[str, Form()],
+                status: Annotated[bool, Form()],
+                description: Annotated[str, Form()],
+                password: Annotated[str, Form()],
+                user_service = Depends(get_user_service)):
+
+
+        user_data =  {
+                        "user_id":user_id,
+                        "user_name":user_name,
+                        "email":email,
+                        "status":status,
+                        "description":description,
+                        "password":password,
+                      }
+
+        return user_service.create2(user_data)
 
 # login endpoint
 @user_router.post("/login")

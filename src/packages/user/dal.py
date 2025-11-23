@@ -11,6 +11,26 @@ class UserDal:
     def __init__(self, session):
         self.session = session
 
+
+    def add2(self, new_user: User):
+        try:
+            result = []
+            self.session.add(new_user)
+
+            self.session.commit()
+
+            self.session.refresh(new_user)
+            result.append(new_user)
+
+            return result
+
+        except Exception as error:
+            self.session.rollback()
+            print("Unexpected Error : ", str(error))
+
+
+
+
     # can do single insert and bulk insert
     def add(self, new_users: List[User]):
         try:
@@ -22,7 +42,7 @@ class UserDal:
 
             self.session.commit()
 
-            for student in new_users:
+            for user in new_users:
                 self.session.refresh(user)
                 result.append(user)
 
