@@ -26,6 +26,13 @@ class Settings(BaseSettings):
     REDIS_PASSWORD:str = "Admin@123"
     REDIS_DB:int = 0
 
+    JWT_TOKEN_EXPIRATION_TIME_IN_HOURS:int = 1
+    JWT_TOKEN_EXPIRATION_TIME_IN_MINUTES:int = 10
+    JWT_TOKEN_EXPIRATION_TIME_IN_SECONDS:int = 5
+    JWT_TOKEN_EXPIRATION_SELECTION:str="MINUTES"
+    JWT_SECRET_KEY:str = "aserfghujkuytrertyuikmnbvfdftyuikmnbvcxsrtyujbvcxsedrtyuikmnbvcdfghj"
+    JWT_ALGORITHM:str= "HS256"
+
     DB: str = "postgresql+psycopg://admin:Admin%40123@127.0.0.0:5432/test_db"
 
     @property

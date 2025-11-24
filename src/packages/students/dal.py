@@ -1,10 +1,10 @@
 from typing import List
 
-from fastapi.exceptions import FastAPIError
-
-from src.packages.students.model import Student
 from fastapi import Request
 from sqlmodel import select, func
+
+from src.packages.students.model import Student
+
 
 class StudentDal:
 

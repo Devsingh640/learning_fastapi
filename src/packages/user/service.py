@@ -6,7 +6,7 @@ from src.packages.user.model import User, ReadUserData
 from fastapi.encoders import jsonable_encoder
 from fastapi import Request
 from datetime import timedelta, datetime, timezone
-
+from src.configuration.configuration import settings
 
 class UserService:
     def __init__(self, user_dal: UserDal):
@@ -173,27 +173,30 @@ class UserService:
             print("Unexpected Error : ", str(error))
 
 
-    def create_jwt_access_token(self, data: dict, expiration_time:timedelta, secret_key:str):
-        data_copy = {}
-        algorithm = "HS256"
+    def create_jwt_access_token(self, data: dict):
+        data_copy = data
+        del data_copy["created_at"]
+        del data_copy["updated_at"]
+        del data_copy["password"]
 
-        if expiration_time:
-            expire = datetime.now(timezone.utc) + expiration_time
-        else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=10)
+        expire = None
+
+        if settings.JWT_TOKEN_EXPIRATION_SELECTION=="MINUTES":
+            expire = datetime.now(timezone.utc) + timedelta(minutes=settings.JWT_TOKEN_EXPIRATION_TIME_IN_MINUTES)
+        elif settings.JWT_TOKEN_EXPIRATION_SELECTION=="HOURS":
+            expire = datetime.now(timezone.utc) + timedelta(hours=settings.JWT_TOKEN_EXPIRATION_TIME_IN_HOURS)
+        elif settings.JWT_TOKEN_EXPIRATION_SELECTION=="SECONDS":
+            expire = datetime.now(timezone.utc) + timedelta(hours=settings.JWT_TOKEN_EXPIRATION_TIME_IN_SECONDS)
 
         data_copy.update({"exp": expire})
 
-        return jwt.encode(data_copy, secret_key, algorithm=algorithm)
+        token_generated = jwt.encode(data_copy, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+
+        return token_generated
 
 
 
     def login(self, email="", password=""):
-        jwt_token_expiration_time_in_hours = timedelta(hours=12)
-        jwt_token_expiration_time_in_minutes = timedelta(minutes=5)
-        jwt_token_expiration_time_in_seconds = timedelta(seconds=5)
-
-        jwt_secret_key = "aserfghujkuytrertyuikmnbvfdftyuikmnbvcxsrtyujbvcxsedrtyuikmnbvcdfghj"
 
         user = self.user_dal.login_user(email, password)
 
@@ -208,10 +211,7 @@ class UserService:
             response_data = user.model_dump()
 
             # token will be generated here
-            jwt_token = self.create_jwt_access_token(response_data, jwt_token_expiration_time_in_seconds, jwt_secret_key)
-
-            print(jwt_token)
-            print(type(jwt_token))
+            jwt_token = self.create_jwt_access_token(response_data)
 
             return JSONResponse({
                 "message": "login success",
