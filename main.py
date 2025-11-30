@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 from contextlib import asynccontextmanager
@@ -11,23 +12,37 @@ from src.configuration.configuration import settings
 from src.packages.routes.router import init_routes
 from src.packages.utilities.pos_db import create_db_tables, close_session
 from admin import init_admin
-template = Jinja2Templates(directory="templates")
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 
+async def job_first():
+    print("Started executing task in background")
+    await asyncio.sleep(10)
+    print("Task executing completed in background")
+
+template = Jinja2Templates(directory="templates")
+my_scheduler = AsyncIOScheduler()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # STARTUP
     try:
+        my_scheduler.add_job(job_first, IntervalTrigger(seconds=11), id="job_first")
+        my_scheduler.start()
+
         init_routes(app)
         init_admin(app)
-
         create_db_tables()
-    except Exception as error:
-        print(str(error))
+
+        yield
+
     finally:
+        # SHUTDOWN
+        if my_scheduler:
+            my_scheduler.shutdown(wait=False)
+
         close_session()
         gc.collect()
-
-    yield
 
 
 app = FastAPI(lifespan=lifespan,
